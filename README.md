@@ -1,7 +1,7 @@
 # 🛒 Talabat - Food Ordering System with ASP.NET Core
 
-[![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-blueviolet)](https://dotnet.microsoft.com/)
-[![Entity Framework Core](https://img.shields.io/badge/EF%20Core-8.0-blue)](https://docs.microsoft.com/ef/core/)
+[![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-10.0-blueviolet)](https://dotnet.microsoft.com/)
+[![Entity Framework Core](https://img.shields.io/badge/EF%20Core-10.0-blue)](https://docs.microsoft.com/ef/core/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Architecture: Clean Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-orange)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
