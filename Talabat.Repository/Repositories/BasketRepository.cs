@@ -19,7 +19,7 @@ namespace Talabat.Repository.Repositories
         public async Task<CustomerBasket?> GetBasketByIdAsync(string Id)
         {
             var Basket = await redis.StringGetAsync(Id);
-            return Basket.IsNullOrEmpty ? null : JsonSerializer.Deserialize<CustomerBasket>(Basket);
+            return Basket.IsNullOrEmpty ? null : JsonSerializer.Deserialize<CustomerBasket>(Basket.ToString());
         }
 
         public async Task<CustomerBasket?> UpdateOrAddBasketAsync(CustomerBasket basket)
