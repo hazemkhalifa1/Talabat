@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PL.Helpers;
 using System.Security.Claims;
 using Talabat.APIs.DTOs;
 using Talabat.APIs.Errors;
@@ -61,13 +62,16 @@ namespace Talabat.APIs.Controllers
             if (User is null) return BadRequest(new ApiResponse(400, "This Email is Not Found"));
             var result = await _signInManager.CheckPasswordSignInAsync(User, model.Password, false);
             if (!result.Succeeded) return BadRequest(new ApiResponse(400, "Wrong Password"));
+            var roleName = _userManager.GetRolesAsync(User).Result.FirstOrDefault();
             return Ok(new UserDto()
             {
                 DisplayName = User.DisplayName,
                 Email = User.Email,
+                RoleName = roleName,
                 Token = await _tokenService.CreateTokenAsync(User, _userManager)
             });
         }
+
         [Authorize]
         [HttpGet("GetCurrentUser")]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
@@ -110,5 +114,66 @@ namespace Talabat.APIs.Controllers
         public async Task<bool> CheckEmail(string Email)
         => await _userManager.FindByEmailAsync(Email) is not null ? true : false;
 
+
+        [Authorize]
+        [HttpPut("Users/{id:string}")]
+        public async Task<ActionResult<UserDto>> EditUser(string id, UserDto newUser)
+        {
+            var currentUser = await _userManager.FindByIdAsync(id);
+            if (currentUser is null)
+                return BadRequest(new ApiResponse(400, "This User Is Not Found"));
+            var currentRole = _userManager.GetRolesAsync(currentUser).Result.FirstOrDefault();
+            if (currentRole != newUser.RoleName)
+            {
+                await _userManager.RemoveFromRoleAsync(currentUser, currentRole);
+                await _userManager.AddToRoleAsync(currentUser, newUser.RoleName);
+            }
+            currentUser.DisplayName = newUser.DisplayName;
+            currentUser.Email = newUser.Email;
+            currentUser.UserName = newUser.Email.Split('@')[0];
+            var result = await _userManager.UpdateAsync(currentUser);
+            if (!result.Succeeded)
+                return BadRequest(new ApiResponse(400, result.Errors.Aggregate("", (fe, le) => fe + "\n" + le.Description).ToString()));
+
+            return Ok(newUser);
+
+        }
+
+        [HttpPost("ForgetPassword")]
+        public async Task<ActionResult> ForgetPassword(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+                return BadRequest(new ApiResponse(400, "This Email Is Not Found "));
+            var token = _userManager.GeneratePasswordResetTokenAsync(user);
+            var url = Url.Action(nameof(ResetPassword), "Account",
+            new { token = token, email = user.Email },
+            Request.Scheme);
+            var emailToSend = new Email
+            {
+                To = email,
+                Subject = "Reset Password",
+                Body = url
+            };
+
+            EmailSetting.SendEmail(emailToSend);
+
+            return Ok("Check Your E-mail Inbox");
+
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<ActionResult> ResetPassword(ResetPasswordRequest model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user is null)
+                return BadRequest(new ApiResponse(400, "This Email Is Not Found "));
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+
+            if (!result.Succeeded)
+                return BadRequest(new ApiResponse(400, result.Errors.Aggregate("", (fe, le) => fe + "\n" + le.Description).ToString()));
+
+            return Ok("Reset Password Done Successfully");
+        }
     }
 }
