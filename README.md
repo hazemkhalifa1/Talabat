@@ -1,124 +1,268 @@
-# 🛒 Talabat - Food Ordering System
+# 🛒 Talabat - نظام طلبات الطعام باستخدام ASP.NET Core
 
-The **Talabat** food ordering system is a comprehensive web application built using **ASP.NET Core** and **Entity Framework Core**. It features a clean, layered architecture with separate projects for each layer, ensuring maintainability and scalability.
+[![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-blueviolet)](https://dotnet.microsoft.com/)
+[![Entity Framework Core](https://img.shields.io/badge/EF%20Core-8.0-blue)](https://docs.microsoft.com/ef/core/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Architecture: Clean Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-orange)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
-## ✨ Key Features
+**نظام Talabat** هو تطبيق ويب متكامل لإدارة طلبات الطعام، مبني باستخدام **ASP.NET Core** و **Entity Framework Core**. يتميز بهيكل معماري نظيف مقسم إلى طبقات متعددة (Clean Architecture) لضمان قابلية الصيانة والتوسع.
 
-*   **Multi-Layer Architecture**: Clean separation of concerns with distinct projects for Core business logic, Data Repository, API layer, and Services.
-*   **Entity Framework Core**: Powerful ORM for database management and migrations.
-*   **Generic Repository Pattern**: Reduces code duplication and standardizes data access.
-*   **RESTful API**: Designed for consumption by web or mobile front-end applications.
+## ✨ المميزات الرئيسية
 
-## 🗂️ Project Structure (Solution)
+✅ **هندسة متعددة الطبقات** - فصل واضح بين منطق الأعمال، واجهة برمجة التطبيقات، طبقة البيانات، وطبقة الخدمات  
+✅ **Entity Framework Core** - استخدام ORM قوي لإدارة قواعد البيانات والهجرات  
+✅ **مستودع عام (Generic Repository)** - نمط تصميم يقلل التكرار ويوحد طريقة الوصول إلى البيانات  
+✅ **وحدات العمل (Unit of Work)** - إدارة المعاملات وضمان تكامل البيانات  
+✅ **واجهة برمجة تطبيقات RESTful** - مصممة لتكون قابلة للاستهلاك من تطبيقات الويب أو الهاتف  
+✅ **كائنات نقل البيانات (DTOs)** - لفصل نماذج العرض عن نماذج المجال  
+✅ **حقن التبعيات (Dependency Injection)** - إدارة فعالة للتبعيات وتحسين قابلية الاختبار  
+
+## 🏗️ الهيكل المعماري (Clean Architecture)
 
 ```
 Talabat.sln
-├── 📂 Talabat.APIs/          # (Main entry point) Contains API Controllers, Middleware, and Configuration.
-├── 📂 Talabat.Core/          # (Core Domain) Contains Entities, Interfaces, Enums, and Specifications.
-├── 📂 Talabat.Repository/    # (Data Access Layer) Contains the Data Context, Migrations, and Repository implementations.
-├── 📂 Talabat.Service/       # (Business Logic Layer) Contains services, DTOs, and application logic.
-├── 📄 .gitignore
-├── 📄 .gitattributes
-└── 📄 README.md              # (This file)
+├── 📂 Talabat.APIs/          # (طبقة العرض) - واجهات برمجة التطبيقات
+│   ├── Controllers/          # وحدات التحكم في API
+│   ├── DTOs/                 # كائنات نقل البيانات
+│   ├── Middleware/           # وسائط التطبيق
+│   ├── Extensions/           # امتدادات التطبيق
+│   └── appsettings.json      # إعدادات التطبيق
+│
+├── 📂 Talabat.Core/          # (نواة النظام) - منطق الأعمال الأساسي
+│   ├── Entities/             # كيانات المجال (Domain Entities)
+│   ├── Interfaces/           # واجهات المستودع والخدمات
+│   ├── Specifications/       # نمط المواصفات للاستعلامات
+│   └── Constants/            # ثوابت النظام
+│
+├── 📂 Talabat.Repository/    # (طبقة البنية التحتية) - الوصول إلى البيانات
+│   ├── Data/                 # سياق قاعدة البيانات (DbContext)
+│   ├── Migrations/           # هجرات قاعدة البيانات
+│   ├── GenericRepository/    # المستودع العام
+│   └── UnitOfWork/           # نمط وحدة العمل
+│
+├── 📂 Talabat.Service/       # (طبقة التطبيق) - منطق التطبيق
+│   ├── Services/             # خدمات التطبيق
+│   ├── Mappings/             * ملفات التعيين (AutoMapper)
+│   └── Validators/           * مدققات البيانات
+│
+└── 📂 Talabat.Tests/         # (مشروع الاختبارات) - وحدات الاختبار
+    ├── UnitTests/            # اختبارات الوحدات
+    └── IntegrationTests/     # اختبارات التكامل
 ```
 
-## 🚀 Getting Started
+*ملاحظة: المجلدات المميزة بـ * اختيارية ويمكن إضافتها مستقبلاً*
 
-### Prerequisites
-*   [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
-*   [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (or use LocalDB which comes with Visual Studio)
-*   A code editor like [Visual Studio 2022](https://visualstudio.microsoft.com/vs/), [VS Code](https://code.visualstudio.com/), or [Rider](https://www.jetbrains.com/rider/)
+## 🚀 البدء السريع
 
-### Installation & Setup
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/hazemkhalifa1/Talabat.git
-    cd Talabat
-    ```
+### المتطلبات المسبقة
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) أو أحدث
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (أو LocalDB الذي يأتي مع Visual Studio)
+- [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) أو [VS Code](https://code.visualstudio.com/)
+- [Git](https://git-scm.com/)
 
-2.  **Restore dependencies**
-    ```bash
-    dotnet restore
-    ```
+### خطوات التثبيت
 
-3.  **Update the database connection string**
-    *   Open `appsettings.json` in the `Talabat.APIs` project.
-    *   Modify the `DefaultConnection` string to point to your local SQL Server instance.
+1. **استنساخ المستودع**
+   ```bash
+   git clone https://github.com/hazemkhalifa1/Talabat.git
+   cd Talabat
+   ```
 
-4.  **Apply database migrations**
-    Navigate to the `Talabat.Repository` project folder and run:
-    ```bash
-    dotnet ef database update
-    ```
+2. **تثبيت الحزم المطلوبة**
+   ```bash
+   dotnet restore
+   ```
 
-5.  **Run the application**
-    ```bash
-    dotnet run --project Talabat.APIs
-    ```
-    The API will start, typically at `https://localhost:5001` or `http://localhost:5000`.
+3. **تكوين قاعدة البيانات**
+   - افتح ملف `appsettings.json` في مشروع `Talabat.APIs`
+   - عدل سلسلة الاتصال `DefaultConnection` لتشير إلى خادم SQL Server الخاص بك:
+   ```json
+   "ConnectionStrings": {
+     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=TalabatDB;Trusted_Connection=True;MultipleActiveResultSets=true"
+   }
+   ```
 
-## 🛠️ Built With
+4. **تطبيق هجرات قاعدة البيانات**
+   ```bash
+   cd Talabat.Repository
+   dotnet ef database update
+   ```
 
-| Technology | Purpose |
-|------------|---------|
-| ![C#](https://img.shields.io/badge/C%23-239120?logo=c-sharp&logoColor=white) | Primary backend language |
-| ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-512BD4?logo=dotnet&logoColor=white) | Web API framework |
-| ![Entity Framework Core](https://img.shields.io/badge/EF%20Core-512BD4?logo=dotnet&logoColor=white) | Object-Relational Mapper (ORM) |
-| ![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?logo=microsoft-sql-server&logoColor=white) | Database management system |
-| ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white) | Version control |
+5. **تشغيل التطبيق**
+   ```bash
+   cd ../Talabat.APIs
+   dotnet run
+   ```
+   
+   سيعمل التطبيق على:
+   - `https://localhost:5001` (للاتصالات الآمنة)
+   - `http://localhost:5000` (للاتصالات العادية)
 
-## 📖 API Usage Examples
+## 📡 واجهة برمجة التطبيقات (API Endpoints)
 
-Once the application is running, you can interact with the endpoints. Here are some examples:
+### منتجات المتجر (Products)
+| الطريقة | المسار | الوصف | حالة |
+|---------|--------|--------|------|
+| `GET` | `/api/products` | استرجاع قائمة جميع المنتجات (مع ترقيم الصفحات) | ✅ منفذ |
+| `GET` | `/api/products/{id}` | استرجاع منتج محدد بالمعرف | ✅ منفذ |
+| `POST` | `/api/products` | إضافة منتج جديد | ⏳ مخطط |
+| `PUT` | `/api/products/{id}` | تحديث منتج موجود | ⏳ مخطط |
+| `DELETE` | `/api/products/{id}` | حذف منتج | ⏳ مخطط |
 
-*   **Get all products**: `GET https://localhost:5001/api/products`
-*   **Get a specific product**: `GET https://localhost:5001/api/products/{id}`
-*   *Replace `{id}` with an actual product ID.*
+### الطلبات (Orders)
+| الطريقة | المسار | الوصف | حالة |
+|---------|--------|--------|------|
+| `GET` | `/api/orders` | استرجاع طلبات المستخدم | ⏳ مخطط |
+| `GET` | `/api/orders/{id}` | استرجاع طلب محدد | ⏳ مخطط |
+| `POST` | `/api/orders` | إنشاء طلب جديد | ✅ منفذ |
+| `PUT` | `/api/orders/{id}/status` | تحديث حالة الطلب | ⏳ مخطط |
 
-> **Tip**: Use tools like [Postman](https://www.postman.com/) or [Swagger UI](https://swagger.io/tools/swagger-ui/) (if configured) to test the API endpoints.
+### العملاء (Customers)
+| الطريقة | المسار | الوصف | حالة |
+|---------|--------|--------|------|
+| `GET` | `/api/customers` | استرجاع قائمة العملاء | ⏳ مخطط |
+| `POST` | `/api/customers/register` | تسجيل عميل جديد | ⏳ مخطط |
+| `POST` | `/api/customers/login` | تسجيل دخول العميل | ⏳ مخطط |
 
-## 🔧 Development
+## 🛠️ التقنيات المستخدمة
 
-### Running Tests
-*(If you add a test project, describe how to run tests here)*
+### الأساسية
+| التقنية | الغرض | الإصدار |
+|---------|--------|---------|
+| ![C#](https://img.shields.io/badge/C%23-239120?logo=c-sharp&logoColor=white) | لغة البرمجة الرئيسية | 12.0 |
+| ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-512BD4?logo=dotnet&logoColor=white) | إطار عمل واجهة برمجة التطبيقات | 8.0 |
+| ![Entity Framework Core](https://img.shields.io/badge/EF%20Core-512BD4?logo=dotnet&logoColor=white) | Object-Relational Mapper (ORM) | 8.0 |
+| ![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?logo=microsoft-sql-server&logoColor=white) | نظام إدارة قواعد البيانات | 2022 |
+
+### حزم NuGet رئيسية
+| الحزمة | الغرض | 
+|---------|--------|
+| **Microsoft.EntityFrameworkCore.SqlServer** | مزود SQL Server لـ EF Core |
+| **Microsoft.EntityFrameworkCore.Tools** | أدوات سطر الأوامر لـ EF Core |
+| **Swashbuckle.AspNetCore** | توثيق واجهة برمجة التطبيقات تلقائياً (Swagger) |
+| **AutoMapper** | تعيين الكائنات تلقائياً (مخطط) |
+| **FluentValidation** | التحقق من صحة النماذج (مخطط) |
+
+### أدوات التطوير
+| الأداة | الاستخدام |
+|--------|-----------|
+| ![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white) | التحكم في الإصدارات |
+| ![Postman](https://img.shields.io/badge/Postman-FF6C37?logo=postman&logoColor=white) | اختبار واجهة برمجة التطبيقات |
+| ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=black) | توثيق واختبار واجهة برمجة التطبيقات |
+
+## 🔧 كيفية الاستخدام
+
+### 1. استعراض واجهة برمجة التطبيقات (Swagger UI)
+بعد تشغيل التطبيق، انتقل إلى:
+```
+https://localhost:5001/swagger
+```
+للاطلاع على جميع نقاط النهاية المتاحة وتجربتها مباشرة.
+
+### 2. اختبار باستخدام Postman
+استورد ملف تجميع Postman المتوفر أو استخدم الأمثلة التالية:
+
+**استرجاع جميع المنتجات:**
+```http
+GET https://localhost:5001/api/products
+```
+
+**إنشاء طلب جديد:**
+```http
+POST https://localhost:5001/api/orders
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "items": [
+    {
+      "productId": 5,
+      "quantity": 2
+    }
+  ],
+  "deliveryAddress": "123 شارع التحرير، القاهرة"
+}
+```
+
+## 🧪 الاختبارات
+
+### تشغيل الاختبارات
 ```bash
+# تشغيل جميع الاختبارات
 dotnet test
+
+# تشغيل اختبارات مشروع محدد
+dotnet test Talabat.Tests
 ```
 
-### Code Scaffolding
-To add a new controller based on an existing entity:
-```bash
-dotnet aspnet-codegenerator controller -name YourController -api -async -m YourEntity -dc ApplicationDbContext -outDir Controllers
-```
+### هيكل الاختبارات
+- **اختبارات الوحدات (Unit Tests)**: اختبار الخدمات والمستودعات بمعزل عن غيرها
+- **اختبارات التكامل (Integration Tests)**: اختبار تكامل واجهة برمجة التطبيقات مع قاعدة البيانات
+- **اختبارات وحدة التحكم (Controller Tests)**: اختبار نقاط نهاية واجهة برمجة التطبيقات
 
-## 🤝 Contributing
+## 🗺️ خارطة الطريق المستقبلية (Roadmap)
 
-Contributions are what make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+### المرحلة 1 (الحالية) ✅
+- [x] إنشاء الهيكل الأساسي متعدد الطبقات
+- [x] تنفيذ المستودع العام (Generic Repository)
+- [x] نمط وحدة العمل (Unit of Work)
+- [x] نقاط نهاية أساسية للمنتجات والطلبات
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+### المرحلة 2 (قيد التطوير) 🔄
+- [ ] تنفيذ المصادقة والتفويض باستخدام JWT
+- [ ] إضافة Swagger UI لتوثيق واجهة برمجة التطبيقات
+- [ ] تنفيذ نمط المواصفات (Specification Pattern) للاستعلامات المعقدة
+- [ ] إضافة التسعير والخصومات
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### المرحلة 3 (مخطط) ⏳
+- [ ] إضافة نظام الدفع الإلكتروني
+- [ ] تنفيذ إشعارات الوقت الفعلي (Real-time Notifications)
+- [ ] إضافة لوحة تحكم للمشرف
+- [ ] تكامل مع خرائط Google لتتبع التوصيل
 
-## 📄 License
+### المرحلة 4 (متقدمة) 🚀
+- [ ] حاوية التطبيق باستخدام Docker
+- [ ] نشر على AWS/Azure
+- [ ] إضافة نظام التخزين المؤقت (Redis)
+- [ ] بناء تطبيق جوال (React Native/Xamarin)
 
-Distributed under the MIT License. See the `LICENSE` file for more information.
+## 🤝 كيفية المساهمة
 
-## 📞 Contact
+المساهمات ترحب بها! لمساعدتنا في تحسين Talabat:
 
-Hazem Khalifa - [GitHub Profile](https://github.com/hazemkhalifa1)
+1. انسخ المشروع (Fork)
+2. أنشئ فرعًا للميزة الجديدة (`git checkout -b feature/AmazingFeature`)
+3. قم بإجراء التغييرات وأضفها (`git commit -m 'Add some AmazingFeature'`)
+4. ادفع إلى الفرع (`git push origin feature/AmazingFeature`)
+5. افتح طلب دمج (Pull Request)
 
-Project Link: [https://github.com/hazemkhalifa1/Talabat](https://github.com/hazemkhalifa1/Talabat)
+### إرشادات المساهمة
+- اتبع نمط الترميز الحالي
+- أضف تعليقات واضحة للكود المعقد
+- قم بتحديث التوثيق عند تغيير واجهة برمجة التطبيقات
+- اكتب اختبارات لوظائف جديدة
+
+## 📄 الترخيص
+
+هذا المشروع مرخص تحت رخصة MIT - انظر ملف [LICENSE](LICENSE) للتفاصيل.
+
+## 📞 التواصل والاتصال
+
+- **المطور**: حازم خليفة
+- **البريد الإلكتروني**: [hazem.khalifa@example.com](mailto:hazem.khalifa@example.com)
+- **LinkedIn**: [Hazem Khalifa](https://linkedin.com/in/hazemkhalifa)
+- **GitHub**: [@hazemkhalifa1](https://github.com/hazemkhalifa1)
+
+رابط المشروع: [https://github.com/hazemkhalifa1/Talabat](https://github.com/hazemkhalifa1/Talabat)
+
+## 🙏 الشكر والتقدير
+
+هذا المشروع مستوحى من:
+- [Clean Architecture by Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [Microsoft .NET Documentation](https://docs.microsoft.com/en-us/dotnet/)
+- [Entity Framework Core Tutorials](https://docs.microsoft.com/en-us/ef/core/)
+- نماذج هندسية شائعة في تطوير تطبيقات .NET Enterprise
 
 ---
 
-## 🌟 Acknowledgements
-
-This project structure is inspired by clean architecture principles and common .NET development practices. Resources that were helpful include:
-*   [Microsoft .NET Documentation](https://docs.microsoft.com/en-us/dotnet/)
-*   [Entity Framework Core Docs](https://docs.microsoft.com/en-us/ef/core/)
-*   [ASP.NET Core Web API Tutorials](https://docs.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger)
-```
+⭐ **إذا أعجبك هذا المشروع، لا تنسى إضافة نجمة (Star) للمستودع!** ⭐
