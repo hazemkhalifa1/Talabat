@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Talabat.APIs.DTOs;
 using Talabat.APIs.Errors;
@@ -33,21 +34,22 @@ namespace Talabat.APIs.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto model)
         {
-            var User = new AppUser()
+            var user = new AppUser()
             {
                 DisplayName = model.DisplayName,
                 Email = model.Email,
                 UserName = model.Email.Split('@')[0],
                 PhoneNumber = model.PhoneNumber,
             };
-            var result = await _userManager.CreateAsync(User, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
                 return BadRequest(new ApiResponse(400, result.Errors.Aggregate("", (fe, le) => fe + "\n" + le.Description).ToString()));
+            await _userManager.AddToRoleAsync(user, "Member");
             return Ok(new UserDto()
             {
                 DisplayName = model.DisplayName,
                 Email = model.Email,
-                Token = await _tokenService.CreateTokenAsync(User, _userManager)
+                Token = await _tokenService.CreateTokenAsync(user, _userManager)
             });
         }
 
@@ -107,5 +109,6 @@ namespace Talabat.APIs.Controllers
         [HttpGet("EmailExists")]
         public async Task<bool> CheckEmail(string Email)
         => await _userManager.FindByEmailAsync(Email) is not null ? true : false;
+
     }
 }
