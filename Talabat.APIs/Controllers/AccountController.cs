@@ -116,7 +116,7 @@ namespace Talabat.APIs.Controllers
 
 
         [Authorize]
-        [HttpPut("Users/{id:string}")]
+        [HttpPut("Users/{id}")]
         public async Task<ActionResult<UserDto>> EditUser(string id, UserDto newUser)
         {
             var currentUser = await _userManager.FindByIdAsync(id);

@@ -41,7 +41,7 @@ namespace Talabat.APIs.Controllers
             return Ok(role);
         }
 
-        [HttpGet("{id:string}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<RoleDto>> GetById(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
